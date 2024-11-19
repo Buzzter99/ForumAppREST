@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const env = require("dotenv").config();
 const constants = require("../constants");
 const JWT_SECRET = process.env.JWT_SECRET;
+const {ApiResponse} = require('../models/ApiResponse');
 async function authenticationMiddleware(req, res, next) {
   const token = req.cookies ? req.cookies[constants.COOKIE_NAME] : null;
   if (!token) {
@@ -21,10 +22,7 @@ async function authenticationMiddleware(req, res, next) {
 async function privateEndpoint(req, res, next) {
   const isLoggedIn = req.user;
   if (!isLoggedIn) {
-    return res.status(200).json({
-      message: "Authentication credentials are missing or invalid.",
-      statusCode: 401,
-    });
+    return res.status(200).json(new ApiResponse(401,"Authentication credentials are missing or invalid."));
   }
   return next();
 }
