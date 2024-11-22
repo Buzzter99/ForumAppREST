@@ -21,7 +21,7 @@ router.post('/login', async (req, res) => {
     } catch (error) {
       return res.status(200).json(new ApiResponse(400, error.message));
     }
-    res.cookie(constants.COOKIE_NAME, token, {httpOnly: false,maxAge: 2 * 60 * 60 * 1000});
+    res.cookie(constants.COOKIE_NAME, token, {httpOnly: true,maxAge: 2 * 60 * 60 * 1000});
     return res.status(200).json(new ApiResponse(200,'Logged in successfully!'));
 })
 
@@ -44,6 +44,6 @@ router.post('/logout',privateEndpoint, async (req, res) => {
 });
 
 router.get('/isAuthenticated', async (req, res) => {
-    return req.user ? res.status(200).json(new ApiResponse(200,'Authenticated')) : res.status(200).json({statusCode: 401, message: 'Not authenticated'});
+    return req.user ? res.status(200).json(new ApiResponse(200,`Hello, ${req.user.email}`)) : res.status(200).json({statusCode: 401, message: 'Not authenticated'});
 })
 module.exports = router
