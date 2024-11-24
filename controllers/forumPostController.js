@@ -5,12 +5,13 @@ const {privateEndpoint} = require('../middlewares/authenticationMiddleware');
 
 router.post('/add',privateEndpoint, async (req, res) => {
     const post = {
-        Topic: req.body.Topic,
-        Description: req.body.Description,
-        AdditionalInfo: req.body.AdditionalInfo,
-        When: new Date().toUTCString(),
-        Who: req.user._id
+        topic: req.body.topic,
+        description: req.body.description,
+        additionalInfo: req.body.additionalInfo,
+        when: new Date().toUTCString(),
+        who: req.user._id
     }
+    console.log(post);
    try {
     await addPost(post);
    } catch (error) {

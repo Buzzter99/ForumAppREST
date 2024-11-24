@@ -1,22 +1,19 @@
 const ForumPost = require('../models/ForumPost');
 
-async function addPost({Topic,Description,AdditionalInfo,When,Who}) {
-    if(!Topic) {
+async function addPost({topic,description,additionalInfo,when,who}) {
+    if(!topic) {
         throw new Error('Forum topic is required');
     }
-    if(!Description) {
+    if(!description) {
         throw new Error('Forum description is required');
     }
-    if(!AdditionalInfo) {
-        throw new Error('Forum additional info is required');
-    }
-    if(!When) {
+    if(!when) {
         throw new Error('Forum creation date is required');
     }
-    if(!Who) {
+    if(!who) {
         throw new Error('Forum creator is required');
     }
-    await new ForumPost({Topic,Description,AdditionalInfo,When,Who}).save();
+    await new ForumPost({topic,description,additionalInfo,when,who}).save();
 }
 
 module.exports = {addPost};
