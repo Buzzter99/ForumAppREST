@@ -22,7 +22,7 @@ router.post('/add',privateEndpoint, async (req, res) => {
 router.get('/all', async (req, res) => {
     let posts;
     try {
-        posts = await getAllPosts();
+        posts = await getAllPosts(req.user?._id);
     } catch (error) {
         return res.status(200).json(new ApiResponse(400, error.message));
     }
