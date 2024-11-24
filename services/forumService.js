@@ -15,5 +15,9 @@ async function addPost({topic,description,additionalInfo,when,who}) {
     }
     await new ForumPost({topic,description,additionalInfo,when,who}).save();
 }
+async function getAllPosts() {
+    const posts = await ForumPost.find({},'topic description additionalInfo when who comments');
+    return posts;
+}
 
-module.exports = {addPost};
+module.exports = {addPost,getAllPosts};
