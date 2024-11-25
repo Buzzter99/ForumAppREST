@@ -1,4 +1,5 @@
 const ForumPost = require("../models/ForumPost");
+const Comment = require("../models/Comment");
 
 async function addPost({ topic, description, additionalInfo, when, who }) {
   if (!topic) {
@@ -19,7 +20,9 @@ async function getAllPosts(userId) {
   const posts = await ForumPost.find(
     {},
     "topic description additionalInfo when who comments"
-  ).populate("who");
+  )
+    .populate("who")
+    .populate("comments");
   const mappedPosts = posts.map((post) => {
     return {
       ...post.toObject(),
@@ -29,4 +32,17 @@ async function getAllPosts(userId) {
   return mappedPosts;
 }
 
-module.exports = { addPost, getAllPosts };
+async function getSinglePost(postId, userId) {
+  const post = await ForumPost.findById(postId)
+    .populate("who")
+    .populate({
+      path: "comments",
+      populate: { path: "who", model: "User" },
+    });
+  return {
+    ...post.toObject(),
+    isOwner: post.who._id.toString() === userId,
+  };
+}
+
+module.exports = { addPost, getAllPosts, getSinglePost };
