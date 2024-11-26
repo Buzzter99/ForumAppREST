@@ -45,4 +45,18 @@ async function getSinglePost(postId, userId) {
   };
 }
 
-module.exports = { addPost, getAllPosts, getSinglePost };
+async function deletePost(postId,userId) {
+  const post = await ForumPost.findById(postId);
+  if (!post) {
+    throw new Error("Post not found");
+  }
+  if(post.who._id.toString() !== userId) {
+    throw new Error("You cannot delete this post");
+  }
+  if(post.comments.length > 0) {
+    await Comment.deleteMany({ _id: { $in: post.comments } });
+  }
+  await ForumPost.findByIdAndDelete(postId);
+}
+
+module.exports = { addPost, getAllPosts, getSinglePost, deletePost };
