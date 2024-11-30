@@ -1,5 +1,7 @@
+const origins = require('./allowedOrigins');
 const corsOptions = {
-    origin: ['http://localhost:4200','http://localhost'],  
+    origin: [origins],  
     credentials: true,             
   };
+  console.log(origins);
   module.exports = {corsOptions};
