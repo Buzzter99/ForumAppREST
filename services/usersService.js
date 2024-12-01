@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const env = require('dotenv').config();
 const JWT_SECRET = process.env.JWT_SECRET;
+const Comment = require('../models/Comment');
+const ForumPost = require('../models/ForumPost');
 async function registerUser({email,username, password,repeatPassword}) {
     if(password !== repeatPassword) {
         throw new Error('Passwords do not match');
@@ -36,4 +38,15 @@ async function getAllUsers() {
     const users = await User.find({},'username email');
     return users;
 }
-module.exports = {registerUser,loginUser,getAllUsers};
+
+async function getCommentsForUser(userId) {
+    const comments = await Comment.find({who: userId}).populate('who');
+    const result = [];
+    for (let i = 0; i < comments.length; i++) {
+        const postId = await ForumPost.findOne({ comments: comments[i]._id });
+        result.push({postId: postId._id,comment: comments[i]});
+
+    }
+    return result;
+}
+module.exports = {registerUser,loginUser,getAllUsers,getCommentsForUser};

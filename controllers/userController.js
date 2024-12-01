@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const {registerUser,loginUser,getAllUsers} = require('../services/usersService');
+const {registerUser,loginUser,getAllUsers,getCommentsForUser} = require('../services/usersService');
+const {deleteComment} = require('../services/commentService');
 const constants = require('../constants');
 const {privateEndpoint} = require('../middlewares/authenticationMiddleware');
 const {ApiResponse} = require('../models/ApiResponse');
@@ -12,6 +13,30 @@ router.get('/all', async (req, res) => {
         return res.status(200).json(new ApiResponse(400, error.message));
     }
     return res.status(200).json(users);
+})
+
+router.get('/comments',privateEndpoint, async (req, res) => {
+    let comments;
+    try {
+        comments = await getCommentsForUser(req.user._id);
+    } catch (error) {
+        return res.status(200).json(new ApiResponse(400, error.message));
+    }
+    return res.status(200).json(comments);
+})
+
+router.delete('/comments/:postId/:commentId',privateEndpoint, async (req, res) => {
+    let comment = {
+        postId: req.params.postId,
+        commentId: req.params.commentId,
+        userId: req.user._id
+    };
+    try {
+        comment = await deleteComment(comment);
+    } catch (error) {
+        return res.status(200).json(new ApiResponse(400, error.message));
+    }
+    return res.status(200).json(new ApiResponse(200,'Comment deleted successfully!'));
 })
 router.post('/login', async (req, res) => {
     let token;
