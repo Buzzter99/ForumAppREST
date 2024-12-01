@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {addPost,getAllPosts,getSinglePost,deletePost} = require('../services/forumService');
+const {addPost,getAllPosts,getSinglePost,deletePost,editPost} = require('../services/forumService');
 const {addComment} = require('../services/commentService');
 const {ApiResponse} = require('../models/ApiResponse');
 const {privateEndpoint} = require('../middlewares/authenticationMiddleware');
@@ -61,5 +61,21 @@ router.delete('/all/:id',privateEndpoint, async (req, res) => {
         return res.status(200).json(new ApiResponse(400, error.message));
     }
     return res.status(200).json(new ApiResponse(200,'Post deleted successfully!'));
+})
+
+router.post('/edit/:id',privateEndpoint, async (req, res) => {
+    const post = {
+        topic: req.body.topic,
+        description: req.body.description,
+        additionalInfo: req.body.additionalInfo,
+        when: new Date().toUTCString(),
+        who: req.user._id
+    }
+   try {
+    await editPost(req.params.id,post);
+   } catch (error) {
+    return res.status(200).json(new ApiResponse(400,error.message));
+   }
+   return res.status(200).json(new ApiResponse(200,'Post edited successfully!'));
 })
 module.exports = router

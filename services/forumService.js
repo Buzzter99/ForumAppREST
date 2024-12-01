@@ -27,6 +27,7 @@ async function getAllPosts(userId) {
     return {
       ...post.toObject(),
       isOwner: post.who._id.toString() === userId,
+      isAuth: userId ? true : false,
     };
   });
   return mappedPosts;
@@ -42,6 +43,7 @@ async function getSinglePost(postId, userId) {
   return {
     ...post.toObject(),
     isOwner: post.who._id.toString() === userId,
+    isAuth: userId ? true : false,
   };
 }
 
@@ -59,4 +61,24 @@ async function deletePost(postId,userId) {
   await ForumPost.findByIdAndDelete(postId);
 }
 
-module.exports = { addPost, getAllPosts, getSinglePost, deletePost };
+async function editPost(postId,{ topic, description, additionalInfo, when, who }) {
+  const post = await ForumPost.findById(postId);
+  if (!post) {
+    throw new Error("Post does not exist!");
+  }
+  if(post.who._id.toString() !== who) {
+    throw new Error("You cannot edit this post");
+  }
+  if (!topic) {
+    throw new Error("Topic field is required");
+  }
+  if (!description) {
+    throw new Error("Description field is required");
+  }
+  if (!when) {
+    throw new Error("Current Date is required");
+  }
+  await ForumPost.findByIdAndUpdate(postId, {topic,description,additionalInfo, when});
+}
+
+module.exports = { addPost, getAllPosts, getSinglePost, deletePost , editPost};
