@@ -16,8 +16,8 @@ router.get('/all', async (req, res) => {
 router.post('/login', async (req, res) => {
     let token;
     try {
-    const { email, password } = req.body;
-    token = await loginUser({ email, password });
+    const { emailOrUsername, password } = req.body;
+    token = await loginUser({ emailOrUsername, password });
     } catch (error) {
       return res.status(200).json(new ApiResponse(400, error.message));
     }

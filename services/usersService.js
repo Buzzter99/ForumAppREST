@@ -13,20 +13,20 @@ async function registerUser({email,username, password,repeatPassword}) {
     }
     await new User({email,username,password}).save();
 }
-async function loginUser({email, password}) {
-   if(!email) {
-       throw new Error('Email field is required');
+async function loginUser({emailOrUsername, password}) {
+   if(!emailOrUsername) {
+       throw new Error('Email/Username field is required');
    }
    if(!password) {
        throw new Error('Password field is required');
    }
-    const user = await User.findOne({email: email});
+    const user = await User.findOne({$or: [{ username: emailOrUsername }, { email: emailOrUsername }]});
     if(!user) {
-        throw new Error('Wrong email or password');
+        throw new Error('Wrong email/username or password');
     }
     const match = await bcrypt.compare(password, user.password);
     if(!match) {
-        throw new Error('Wrong email or password');
+        throw new Error('Wrong email/username or password');
     }
     const payload = {email: user.email, username: user.username,_id: user._id};
     const token = jwt.sign(payload, JWT_SECRET, {expiresIn: '2h'});
