@@ -44,4 +44,29 @@ async function deleteComment({postId,commentId,userId}) {
   await post.save();
 }
 
-module.exports = { addComment,deleteComment };
+async function getCommentById(id,userId) {
+    const comment = await Comment.findById(id);
+    if (!comment) {
+        throw new Error("Comment not found");
+    }
+    if (comment.who._id.toString() !== userId) {
+        throw new Error("You cannot delete this comment");
+    }
+    return comment;
+}
+
+async function editComment({commentId, msg, userId, when}) {
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+        throw new Error("Comment not found");
+    }
+    if (!msg) {
+        throw new Error("Comment field is required");
+    }
+    if (comment.who._id.toString() !== userId) {
+        throw new Error("You cannot edit this comment");
+    }
+    await Comment.findByIdAndUpdate(commentId, { message: msg, when });
+}
+
+module.exports = { addComment,deleteComment,getCommentById,editComment };

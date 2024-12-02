@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {registerUser,loginUser,getAllUsers,getCommentsForUser} = require('../services/usersService');
-const {deleteComment} = require('../services/commentService');
+const {deleteComment,getCommentById,editComment} = require('../services/commentService');
 const constants = require('../constants');
 const {privateEndpoint} = require('../middlewares/authenticationMiddleware');
 const {ApiResponse} = require('../models/ApiResponse');
@@ -14,6 +14,32 @@ router.get('/all', async (req, res) => {
     }
     return res.status(200).json(users);
 })
+
+router.get('/edit/comment/:id',privateEndpoint, async (req, res) => {
+    let comment;
+    try {
+        comment = await getCommentById(req.params.id,req.user._id);
+    } catch (error) {
+        return res.status(200).json(new ApiResponse(400, error.message));
+    }
+    return res.status(200).json(comment);
+})
+
+router.post('/edit/comment/:id',privateEndpoint, async (req, res) => {
+    const comment = {
+        msg: req.body.msg,
+        when: new Date().toUTCString(),
+        who: req.user._id
+    }
+   try {
+    await editComment({commentId: req.params.id, msg: comment.msg, userId: comment.who, when: comment.when});
+   } catch (error) {
+    return res.status(200).json(new ApiResponse(400,error.message));
+   }
+   return res.status(200).json(new ApiResponse(200,'Comment Edited successfully!'));
+})
+
+
 
 router.get('/comments',privateEndpoint, async (req, res) => {
     let comments;
