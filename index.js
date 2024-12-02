@@ -5,7 +5,8 @@ const {expressConfig} = require('./config/expressconfig');
 const {router} = require('./routes');
 const dbConnection = require('./config/dbconfig');
 const {authenticationMiddleware} = require('./middlewares/authenticationMiddleware');
-const port = 3000;
+const env = require('dotenv').config();
+const port = process.env.PORT || 3000;
 dbConnection.OpenDbConnection()
 expressConfig(app);
 app.use(cookieParser());
