@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const env = require("dotenv").config();
 const constants = require("../constants");
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || constants.JWT_SECRET;
 const {ApiResponse} = require('../models/ApiResponse');
 async function authenticationMiddleware(req, res, next) {
   const token = req.cookies ? req.cookies[constants.COOKIE_NAME] : null;

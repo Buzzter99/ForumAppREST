@@ -1,2 +1,3 @@
 const COOKIE_NAME = 'auth';
-module.exports = {COOKIE_NAME}
+const JWT_SECRET = 'JWT_SECRET';
+module.exports = {COOKIE_NAME,JWT_SECRET};
