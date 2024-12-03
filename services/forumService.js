@@ -19,7 +19,7 @@ async function addPost({ topic, description, additionalInfo, when, who }) {
 async function getAllPosts(userId) {
   const posts = await ForumPost.find(
     {},
-    "topic description additionalInfo when who comments"
+    "topic description additionalInfo when who comments likes"
   )
     .populate("who")
     .populate("comments");
