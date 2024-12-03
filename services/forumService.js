@@ -27,7 +27,7 @@ async function getAllPosts(userId) {
     return {
       ...post.toObject(),
       isOwner: post.who._id.toString() === userId,
-      isAuth: userId ? true : false,
+      isAuth: userId ? true : false
     };
   });
   return mappedPosts;
@@ -44,6 +44,7 @@ async function getSinglePost(postId, userId) {
     ...post.toObject(),
     isOwner: post.who._id.toString() === userId,
     isAuth: userId ? true : false,
+    isLiked: post.likes?.includes(userId) || false,
   };
 }
 
@@ -81,4 +82,20 @@ async function editPost(postId,{ topic, description, additionalInfo, when, who }
   await ForumPost.findByIdAndUpdate(postId, {topic,description,additionalInfo, when});
 }
 
-module.exports = { addPost, getAllPosts, getSinglePost, deletePost , editPost};
+async function likePost(postId,userId) {
+  const post = await ForumPost.findById(postId);
+  if (!post) {
+    throw new Error("Post not found");
+  }
+  if(post.who._id.toString() === userId) {
+    throw new Error("You cannot like your own post");
+  }
+  if (post.likes.includes(userId)) {
+    post.likes.pull(userId);
+  } else {
+    post.likes.push(userId);
+  }
+  await post.save();
+}
+
+module.exports = { addPost, getAllPosts, getSinglePost, deletePost , editPost, likePost};
