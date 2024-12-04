@@ -62,9 +62,17 @@ async function updateUserInfo(userId, { email,username, oldPassword,newPassword,
     throw new Error("User not found");
   }
   if (username) {
+    const existing = await User.findOne({ username: username }).where("_id").ne(userId);
+    if (existing) {
+      throw new Error("Username already exists");
+    }
     user.username = username;
   }
   if (email) {
+    const existing = await User.findOne({ email: email }).where("_id").ne(userId);
+    if (existing) {
+      throw new Error("Email already exists");
+    }
     user.email = email;
   }
   if (!skipPassword) {
