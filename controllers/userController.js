@@ -72,7 +72,7 @@ router.post('/login', async (req, res) => {
     } catch (error) {
       return res.status(200).json(new ApiResponse(400, error.message));
     }
-    res.cookie(constants.COOKIE_NAME, token, {httpOnly: true,maxAge: 2 * 60 * 60 * 1000});
+    res.cookie(constants.COOKIE_NAME, token, {httpOnly: true,maxAge: 2 * 60 * 60 * 1000,sameSite: 'strict'});
     return res.status(200).json(new ApiResponse(200,'Logged in successfully!'));
 })
 
