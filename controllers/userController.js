@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {registerUser,loginUser,getAllUsers,getCommentsForUser} = require('../services/usersService');
+const {registerUser,loginUser,getAllUsers,getCommentsForUser, updateUserInfo} = require('../services/usersService');
 const {deleteComment,getCommentById,editComment} = require('../services/commentService');
 const constants = require('../constants');
 const {privateEndpoint} = require('../middlewares/authenticationMiddleware');
@@ -96,5 +96,19 @@ router.post('/logout',privateEndpoint, async (req, res) => {
 
 router.get('/isAuthenticated', async (req, res) => {
     return req.user ? res.status(200).json(new ApiResponse(200,`Hello, ${req.user.email}`)) : res.status(200).json({statusCode: 401, message: 'Not authenticated'});
+})
+
+router.get('/info',privateEndpoint, async (req, res) => {
+    return res.status(200).json(req.user);
+})
+
+router.post('/update',privateEndpoint, async (req, res) => {
+    try {
+        const {username,email, oldPassword,newPassword,confirmNewPassword} = req.body;
+        await updateUserInfo(req.user._id,{email,username, oldPassword,newPassword,confirmNewPassword});
+    } catch (error) {
+        return res.status(200).json(new ApiResponse(400, error.message));
+    }
+    return res.status(200).json(new ApiResponse(200, 'Account updated successfully!'));
 })
 module.exports = router
