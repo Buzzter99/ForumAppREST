@@ -50,7 +50,7 @@ async function getCommentById(id,userId) {
         throw new Error("Comment not found");
     }
     if (comment.who._id.toString() !== userId) {
-        throw new Error("You cannot delete this comment");
+        throw new Error("You cannot get this comment");
     }
     return comment;
 }
