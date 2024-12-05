@@ -79,11 +79,11 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
     try {
         const {email,username, password,repeatPassword} = req.body;
-        await registerUser({email,username, password,repeatPassword});
+        await registerUser({email,username, password,repeatPassword,when: new Date().toUTCString()});
     } catch (error) {
         return res.status(200).json(new ApiResponse(400, error.message));
     }
-    return res.status(201).json(new ApiResponse(201, 'Account created successfully!'));
+    return res.status(200).json(new ApiResponse(200, 'Account created successfully!'));
 })
 router.post('/logout',privateEndpoint, async (req, res) => {
     try {
@@ -105,7 +105,7 @@ router.get('/info',privateEndpoint, async (req, res) => {
 router.post('/update',privateEndpoint, async (req, res) => {
     try {
         const {username,email, oldPassword,newPassword,confirmNewPassword} = req.body;
-        await updateUserInfo(req.user._id,{email,username, oldPassword,newPassword,confirmNewPassword});
+        await updateUserInfo(req.user._id,{email,username, oldPassword,newPassword,confirmNewPassword,when: new Date().toUTCString()});
     } catch (error) {
         return res.status(200).json(new ApiResponse(400, error.message));
     }

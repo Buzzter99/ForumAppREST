@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const Comment = require("../models/Comment");
 const ForumPost = require("../models/ForumPost");
 const {BCRYPT_ROUNDS} = require("../constants");
-async function registerUser({ email, username, password, repeatPassword }) {
+async function registerUser({ email, username, password, repeatPassword,when }) {
   if (password !== repeatPassword) {
     throw new Error("Passwords do not match");
   }
@@ -16,7 +16,7 @@ async function registerUser({ email, username, password, repeatPassword }) {
   if (existing) {
     throw new Error("Account already exists!");
   }
-  await new User({ email, username, password: await bcrypt.hash(password, BCRYPT_ROUNDS) }).save();
+  await new User({ email, username, password: await bcrypt.hash(password, BCRYPT_ROUNDS),when }).save();
 }
 async function loginUser({ emailOrUsername, password }) {
   if (!emailOrUsername) {
@@ -54,7 +54,7 @@ async function getCommentsForUser(userId) {
   return result;
 }
 
-async function updateUserInfo(userId, { email,username, oldPassword,newPassword,confirmNewPassword }) 
+async function updateUserInfo(userId, { email,username, oldPassword,newPassword,confirmNewPassword,when }) 
 {
   const user = await User.findById(userId);
   const skipPassword = (oldPassword && newPassword && confirmNewPassword) ? false : true;
@@ -85,6 +85,7 @@ async function updateUserInfo(userId, { email,username, oldPassword,newPassword,
     } 
     user.password = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
   }
+  user.when = when;
   await user.save();
 }
 module.exports = { registerUser, loginUser, getAllUsers, getCommentsForUser, updateUserInfo };
