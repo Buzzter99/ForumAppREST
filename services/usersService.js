@@ -6,6 +6,11 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const Comment = require("../models/Comment");
 const ForumPost = require("../models/ForumPost");
 const {BCRYPT_ROUNDS} = require("../constants");
+async function signToken(user) {
+  const payload = { email: user.email, username: user.username, _id: user._id };
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "2h" });
+  return token;
+}
 async function registerUser({ email, username, password, repeatPassword,when }) {
   if (password !== repeatPassword) {
     throw new Error("Passwords do not match");
@@ -35,9 +40,7 @@ async function loginUser({ emailOrUsername, password }) {
   if (!match) {
     throw new Error("Wrong email/username or password");
   }
-  const payload = { email: user.email, username: user.username, _id: user._id };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "2h" });
-  return token;
+  return signToken(user);
 }
 async function getAllUsers() {
   const users = await User.find({}, "username email");
@@ -88,4 +91,4 @@ async function updateUserInfo(userId, { email,username, oldPassword,newPassword,
   user.when = when;
   await user.save();
 }
-module.exports = { registerUser, loginUser, getAllUsers, getCommentsForUser, updateUserInfo };
+module.exports = { registerUser, loginUser, getAllUsers, getCommentsForUser, updateUserInfo, signToken };
