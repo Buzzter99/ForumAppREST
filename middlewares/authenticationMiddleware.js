@@ -5,13 +5,13 @@ const JWT_SECRET = process.env.JWT_SECRET || constants.JWT_SECRET;
 const apiKey = process.env.API_KEY || constants.API_KEY;
 const {ApiResponse} = require('../models/ApiResponse');
 async function authenticationMiddleware(req, res, next) {
-  const requestApiKey = req.header("X-API-KEY");
-    if (!requestApiKey) {
-        return res.status(200).json(new ApiResponse(401,"API Key is missing."));
-    }
-    if (apiKey !== requestApiKey) {
-        return res.status(200).json(new ApiResponse(403,"Invalid API Key."));
-    }
+  // const requestApiKey = req.header("X-API-KEY");
+  //   if (!requestApiKey) {
+  //       return res.status(200).json(new ApiResponse(401,"API Key is missing."));
+  //   }
+  //   if (apiKey !== requestApiKey) {
+  //       return res.status(200).json(new ApiResponse(403,"Invalid API Key."));
+  //   }
   const token = req.cookies ? req.cookies[constants.COOKIE_NAME] : null;
   if (!token) {
     return next();
