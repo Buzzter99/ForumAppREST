@@ -1,4 +1,5 @@
 const COOKIE_NAME = 'auth';
 const JWT_SECRET = 'JWT_SECRET';
 const BCRYPT_ROUNDS = 10;
-module.exports = {COOKIE_NAME,JWT_SECRET,BCRYPT_ROUNDS};
+const API_KEY = 'API_KEY';
+module.exports = {COOKIE_NAME,JWT_SECRET,BCRYPT_ROUNDS,API_KEY};
