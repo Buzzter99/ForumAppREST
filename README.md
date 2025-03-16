@@ -7,4 +7,4 @@ API_KEY - Api key which the application will check if it exists in X-API-KEY Hea
 DROPBOX_CLIENT_ID - dropbox client id if using dropbox storage
 DROPBOX_CLIENT_SECRET - dropbox client secret of the app
 DROPBOX_REFRESH_TOKEN - refresh token for getting access tokens
-After providing required environment variables the api it can be started with npm start or npm run start. By default application starts on port 3000 or what is set in environment variable PORT.
+If dropbox environment variables are not set some functionalities/endpoints might not work. After providing required environment variables the api it can be started with npm start or npm run start. By default application starts on port 3000 or what is set in environment variable PORT.
