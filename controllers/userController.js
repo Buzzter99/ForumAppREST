@@ -15,7 +15,6 @@ const {
 const constants = require("../constants");
 const { privateEndpoint } = require("../middlewares/authenticationMiddleware");
 const { ApiResponse } = require("../models/ApiResponse");
-const { generateUrlByFolder } = require("../services/dropboxApiService");
 
 router.get("/all", async (req, res) => {
   let users;
